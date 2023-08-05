@@ -7,7 +7,13 @@ import (
 )
 
 type Task struct {
-	ID int
+	ID    int
+	Argas any
+}
+
+type EmailTask struct {
+	To      string
+	Subject string
 }
 
 func RunWorker(ctx context.Context, buf int) (queue chan *Task) {
@@ -40,11 +46,17 @@ func executeTask(task *Task, errChan chan error) {
 		}
 	}()
 
+	switch task.Argas.(type) {
+	case EmailTask:
+		log.Printf("send email: %v", task.Argas.(EmailTask))
+	default:
+		log.Printf("exectute task: %v", task)
+	}
+
 	// シミュレーターとして3秒待つ
 	// time.Sleep(3 * time.Second)
 	//ランダムでpanicを発生させる
 	// if rand.Intn(2) == 0 {
 	// 	panic("panic")
 	// }
-	log.Printf("exectute task: %v", task)
 }

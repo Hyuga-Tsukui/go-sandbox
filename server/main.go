@@ -31,6 +31,21 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/task-email", func(w http.ResponseWriter, r *http.Request) {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("Recovered in executeTask: %v", r)
+			}
+		}()
+		switch r.Method {
+		case http.MethodPost:
+			queue <- &worker.Task{ID: 1, Argas: worker.EmailTask{To: "exmaple@mail.com", Subject: "test"}}
+			w.WriteHeader(http.StatusAccepted)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	})
+
 	http.HandleFunc("/shutdown-worker", func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case http.MethodPost:
