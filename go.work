@@ -4,4 +4,5 @@ use (
 	context/no-context-cancelation
 	context/use-context-cancelation
 	server
+	time-lib
 )
